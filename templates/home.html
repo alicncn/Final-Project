@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* the top right button */
+            .schema-button-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
 
+        .schema-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        body {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        body {
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+        .query-form {
+            margin: 20px;
+            text-align: center; 
+        }
+        .query-form input[type="text"] {
+            width: 80%; 
+            padding: 10px;
+            margin: 0 10px 20px 10px;
+            font-size: 1em; 
+        }
+        .query-form button {
+            padding: 10px 20px;
+            font-size: 1em; 
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; 
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .dashboard-container {
+            margin-top: 30px; 
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .column {
+            flex: 1;
+            padding: 0 10px; 
+        }
+        
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+            }
+        }
+        .chart-container {
+            border: 1px solid #ddd; 
+            margin: 10px 0;
+            padding: 10px;
+        }
+        h1.dashboard-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        /* comment section */
+        #comment-section {
+        margin-top: 50px;
+        max-width: 800px; 
+        margin-left: auto;
+        margin-right: auto;
+        font-family: 'Arial', sans-serif; 
+        }
+
+        #comment-section h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        #comment-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
+        }
+
+        #comment-section input,
+        #comment-section textarea,
+        #comment-section button {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px; 
+            font-size: 16px; 
+        }
+
+        #comment-section textarea {
+            resize: vertical; 
+        }
+
+        #comment-section button {
+            background-color: #007bff; 
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s; 
+        }
+
+        #comment-section button:hover {
+            background-color: #0056b3; 
+        }
+
+        #comments-list {
+            margin-top: 30px;
+            border-top: 1px solid #eee; 
+        }
+
+        #comments-list .comment {
+            padding: 15px;
+            border-bottom: 1px solid #eee; 
+        }
+
+        #comments-list .comment p {
+            margin: 0; 
+        }
+
+        #comments-list .comment strong {
+            font-size: 1em; 
+            color: #007bff; 
+        }
+
+        #comments-list .comment em {
+            font-size: 0.8em;
+            color: #6c757d; 
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Query Form -->
+    <div class="query-form">
+        <form action="/results" method="post" target="_blank">
+            <input type="text" name="query" placeholder="Enter your SQL query" required>
+            <button type="submit">Query</button>
+        </form>
+    </div>
+    
+    <!-- Schema Info Button -->
+    <div class="schema-button-container">
+        <form action="/schema" method="post" target="_blank">
+            <button type="submit" class="schema-button">Schema Info</button>
+        </form>
+    </div>
+
+    <h1 class="dashboard-title">COVID-19 Dashboard</h1>
+    
+    <div class="row">
+        <!-- Top row charts -->
+        <div class="column">
+            <div id="countries-bar-chart" class="chart-container"></div>
+        </div>
+        <div class="column">
+            <div id="scatter-plot" class="chart-container"></div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Bottom row charts -->
+        <div class="column">
+            <div id="who-confirmed" class="chart-container"></div>
+        </div>
+        <div class="column">
+            <div id="who-deaths" class="chart-container"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <div id="who-fatality" class="chart-container"></div>
+        </div>
+        <div class="column">
+            <div id="who-recovery" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div id="comment-section">
+        <h2>Comments</h2>
+        <form action="/" method="post">
+            <input type="text" name="user_name" placeholder="Your Name" required>
+            <textarea name="comment" placeholder="Your Comment" required></textarea>
+            <button type="submit">Submit Comment</button>
+        </form>
+    
+        <!-- Display comments -->
+        <div id="comments-list">
+            {% for comment in comments %}
+                <div class="comment">
+                    <p><strong>{{ comment.user_name }}</strong> <em>{{ comment.timestamp }}</em></p>
+                    <p>{{ comment.comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        const graphs = {{ graphs_json | safe }};
+        
+        Plotly.newPlot('countries-bar-chart', JSON.parse(graphs.countries_bar_chart));
+        Plotly.newPlot('scatter-plot', JSON.parse(graphs.scatter_plot));
+        Plotly.newPlot('who-confirmed', JSON.parse(graphs.who_confirmed));
+        Plotly.newPlot('who-deaths', JSON.parse(graphs.who_deaths));
+        Plotly.newPlot('who-fatality', JSON.parse(graphs.who_fatality));
+        Plotly.newPlot('who-recovery', JSON.parse(graphs.who_recovery));
+    </script>
+</body>
+</html>
