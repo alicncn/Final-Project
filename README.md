@@ -31,14 +31,14 @@ This project is designed to provide an interactive web dashboard to visualize CO
 
 Update the config.py file with your own Snowflake and MongoDB credentials:
 
-USER = 'your_snowflake_username'\n
-PASSWORD = 'your_snowflake_password'\n
-ACCOUNT = 'your_snowflake_account'
-WAREHOUSE = 'your_snowflake_warehouse'
-DATABASE = 'your_snowflake_database'
-SCHEMA = 'your_snowflake_schema'
-ROLE = 'your_snowflake_role'
-MONGODB_URI='your_mongodb_uri'
+<p>USER = 'your_snowflake_username'</p>
+<p>PASSWORD = 'your_snowflake_password'</p>
+<p>ACCOUNT = 'your_snowflake_account'</p>
+<p>WAREHOUSE = 'your_snowflake_warehouse'</p>
+<p>DATABASE = 'your_snowflake_database'</p>
+<p>SCHEMA = 'your_snowflake_schema'</p>
+<p>ROLE = 'your_snowflake_role'</p>
+<p>MONGODB_URI='your_mongodb_uri'</p>
 
 ## Usage
 
