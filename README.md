@@ -24,7 +24,8 @@ This project is designed to provide an interactive web dashboard to visualize CO
 
 - Create a virtual environment in the folder with the command:  python3 -m venv venv
 - Before running the app you should get these libraries. Run the command in your terminal:
-      pip install -r requirements.txt
+
+  pip install -r requirements.txt
 
 ## Configuration
 
