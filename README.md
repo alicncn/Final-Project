@@ -13,7 +13,7 @@ This project is designed to provide an interactive web dashboard to visualize CO
 
 ## Technologies
 
-- Python 3.11+
+- Python 3.11
 - Flask
 - Snowflake
 - MongoDB
