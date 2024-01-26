@@ -1,3 +1,4 @@
+# Configuration for the Final Project
 USER = 'ALICANCANBIGDATATASK'
 PASSWORD = 'Alican.94'
 ACCOUNT = 'ctutuvp-iy97632'
